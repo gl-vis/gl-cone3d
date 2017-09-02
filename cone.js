@@ -39,8 +39,8 @@ module.exports = function(vectorfield, bounds) {
 			maxLen = V.length(u);
 		}
 	}
-	let minV = vec3(minX, minY, minZ);
-	let maxV = vec3(maxX, maxY, maxZ);
+	let minV = [minX, minY, minZ];
+	let maxV = [maxX, maxY, maxZ];
 	if (bounds) {
 		bounds[0] = minV;
 		bounds[1] = maxV;
@@ -86,7 +86,7 @@ module.exports = function(vectorfield, bounds) {
 			let v3 = V.add(vec3(), v2, x);
 			V.add(v3, v3, y);
 			let t3 = V.add(vec3(), tx, ty);
-			let n3 = V.subtract(vec3, v3, v1);
+			let n3 = V.subtract(vec3(), v3, v1);
 			V.cross(n3, n3, t3);
 			V.normalize(n3, n3);
 			if (k > 0) {
