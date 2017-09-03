@@ -15,7 +15,7 @@ module.exports = function(vectorfield, bounds) {
 	var vectors = vectorfield.vectors;
 	let geo = {
 		positions: [],
-		vertexColors: [],
+		vertexIntensity: [],
 		vertexNormals: [],
 		cells: []
 	};
@@ -58,11 +58,8 @@ module.exports = function(vectorfield, bounds) {
 		// Position at point i.
 		let v1 = positions[i];
 
-		// Color for the cone.
-		//
-		//let c1 = new THREE.Color();
-		//c1.setHSL(0.67 - d.length() * 0.67, 1, 0.5);
-		let c1 = vec3(V.length(d), 1.0-Math.abs(0.5-V.length(d))*2, 1.0-V.length(d));
+		// Intensity for the cone.
+		var intensity = V.length(d);
 
 		// Scale the cone up so that maximum magnitude cone touches the next cone's base.
 		V.scale(d, d, 2);
@@ -91,13 +88,15 @@ module.exports = function(vectorfield, bounds) {
 			V.normalize(n3, n3);
 			if (k > 0) {
 				geo.positions.push(v3, v4, v1);
-				geo.vertexColors.push(c1, c1, c1);
+				geo.vertexIntensity.push(intensity, intensity, intensity);
 				geo.vertexNormals.push(n3, n4, n3);
+
 				geo.positions.push(v2, v4, v3);
-				geo.vertexColors.push(c1, c1, c1);
+				geo.vertexIntensity.push(intensity, intensity, intensity);
 				geo.vertexNormals.push(nback, nback, nback);
+
 				let m = geo.positions.length;
-				geo.cells.push([m-6, m-5, m-4], [m-3, m-2, m-1]); // drawElements is the worst :(
+				geo.cells.push([m-6, m-5, m-4], [m-3, m-2, m-1]);
 			}
 			v4 = v3;
 			n4 = n3;

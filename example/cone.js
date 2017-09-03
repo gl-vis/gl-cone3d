@@ -28,6 +28,7 @@ var camera = createCamera(canvas, {
   mode: 'turntable'
 })
 
+conePlot.colormap = 'jet'
 var mesh = createMesh(gl, conePlot)
 
 var select = createSelect(gl, [canvas.width, canvas.height])
