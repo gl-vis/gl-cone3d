@@ -8,6 +8,9 @@ var getBounds    = require('bound-points')
 var mouseChange  = require('mouse-change')
 var createMesh   = require('gl-mesh3d')
 var createConePlot = require('../cone')
+var createShader = require('gl-shader')
+
+var shaders = require('../lib/shaders')
 
 var bounds = []
 
@@ -30,6 +33,19 @@ var camera = createCamera(canvas, {
 
 conePlot.colormap = 'portland'
 var mesh = createMesh(gl, conePlot)
+
+function createConeShader(gl, meshShader) {
+  var shader = createShader(gl, meshShader.vertex, meshShader.fragment)
+  shader.attributes.position.location = 0
+  shader.attributes.color.location    = 2
+  shader.attributes.uv.location       = 3
+  shader.attributes.vector.location   = 4
+  shader.uniforms.vectorScale = conePlot.vectorScale;
+  return shader
+}
+
+var shader = createConeShader(gl, shaders.meshShader)
+mesh.triShader = shader
 
 var select = createSelect(gl, [canvas.width, canvas.height])
 var tickSpacing = 5;

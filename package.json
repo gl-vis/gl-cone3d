@@ -7,6 +7,7 @@
     "example": "example"
   },
   "dependencies": {
+    "gl-shader": "^4.2.1",
     "gl-vec3": "^1.0.0",
     "glslify": "^2.1.2"
   },

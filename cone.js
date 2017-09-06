@@ -17,6 +17,7 @@ module.exports = function(vectorfield, bounds) {
 		positions: [],
 		vertexIntensity: [],
 		vertexNormals: [],
+		vectors: [],
 		cells: []
 	};
 
@@ -48,8 +49,41 @@ module.exports = function(vectorfield, bounds) {
 	let scaleV = V.subtract(vec3(), maxV, minV);
 	let imaxLen = 1 / maxLen;
 
+	geo.vectorScale = imaxLen;
+
+	let nml = vec3(0,1,0);
+
 	// Build the cone model.
-	for (let i = 0; i < positions.length; i++) {
+	for (let i = 0, j = 0; i < positions.length; i++) {
+		let [x,y,z] = positions[i];
+		let intensity = V.length(vectors[i]) * imaxLen;
+		for (let k = 0, l = 8; k < l; k++) {
+			geo.positions.push([x, y, z, j++]);
+			geo.positions.push([x, y, z, j++]);
+			geo.positions.push([x, y, z, j++]);
+			geo.positions.push([x, y, z, j++]);
+			geo.positions.push([x, y, z, j++]);
+			geo.positions.push([x, y, z, j++]);
+
+			geo.vectors.push(vectors[i]);
+			geo.vectors.push(vectors[i]);
+			geo.vectors.push(vectors[i]);
+			geo.vectors.push(vectors[i]);
+			geo.vectors.push(vectors[i]);
+			geo.vectors.push(vectors[i]);
+
+			geo.vertexIntensity.push(intensity, intensity, intensity);
+			geo.vertexIntensity.push(intensity, intensity, intensity);
+
+			geo.vertexNormals.push(nml, nml, nml);
+			geo.vertexNormals.push(nml, nml, nml);
+
+			let m = geo.positions.length;
+			geo.cells.push([m-6, m-5, m-4], [m-3, m-2, m-1]);
+		}
+	}
+
+		/*
 
 		// Vector at point i, scaled down by maximum magnitude.
 		let d = vectors[i];
@@ -102,6 +136,7 @@ module.exports = function(vectorfield, bounds) {
 			n4 = n3;
 		}
 	}
+	*/
 
 	return geo;
 };
