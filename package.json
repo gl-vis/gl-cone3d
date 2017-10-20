@@ -21,7 +21,8 @@
     "gl-spikes3d": "^1.0.5"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+	"build-example": "browserify -o build/example.js example/cone.js",
+	"test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
