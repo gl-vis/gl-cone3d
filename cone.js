@@ -11,13 +11,14 @@ const vec3 = function(x, y, z) {
 }
 
 module.exports = function(vectorfield, bounds) {
-	var positions = vectorfield.positions;	
+	var positions = vectorfield.positions;
 	var vectors = vectorfield.vectors;
 	let geo = {
 		positions: [],
 		vertexIntensity: [],
 		vertexNormals: [],
-		cells: []
+		cells: [],
+		colormap: vectorfield.colormap
 	};
 
 	// Compute bounding box for the dataset.

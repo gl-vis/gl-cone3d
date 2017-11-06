@@ -12,7 +12,12 @@ var createConePlot = require('../cone')
 var bounds = []
 
 var wind = require('./dataset-wind')
-var conePlot = createConePlot(wind, bounds)
+
+var conePlot = createConePlot({
+  positions: wind.positions,
+  vectors: wind.vectors,
+  colormap: 'portland'
+}, bounds)
 
 var canvas = document.createElement('canvas')
 document.body.appendChild(canvas)
@@ -28,7 +33,6 @@ var camera = createCamera(canvas, {
   mode: 'turntable'
 })
 
-conePlot.colormap = 'portland'
 var mesh = createMesh(gl, conePlot)
 
 var select = createSelect(gl, [canvas.width, canvas.height])

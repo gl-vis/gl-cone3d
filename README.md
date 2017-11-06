@@ -16,7 +16,8 @@ var bounds = [];
 
 var conePlot = createConePlot({
     positions: wind.positions,
-    vectors: wind.vectors
+    vectors: wind.vectors,
+    colormap: 'portland'
 }, bounds)
 
 var mesh = createMesh(gl, conePlot)
@@ -31,7 +32,7 @@ scene.add(mesh)
 ```
 npm i gl-cone3d
 ```
-    
+
 # Basic interface
 
 ## Constructor
@@ -43,6 +44,7 @@ Creates a cone plot of a vector field.
 
     + `positions` *(Required)* An array of positions for the vector field, encoded as arrays
     + `vectors` *(Required)* An array of vectors for the vector field, encoded as arrays
+    + `colormap` Colormap for the cone plot.
 
 **Returns** A cone plot object that can be passed to gl-mesh3d.
 
