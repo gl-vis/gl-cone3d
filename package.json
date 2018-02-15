@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "gl-vec3": "^1.0.0",
-    "glslify": "^2.1.2"
+    "glslify": "^6.1.0"
   },
   "devDependencies": {
     "3d-view-controls": "^2.1.1",
@@ -21,8 +21,8 @@
     "gl-spikes3d": "^1.0.5"
   },
   "scripts": {
-	"build-example": "browserify -o build/example.js example/cone.js",
-	"test": "echo \"Error: no test specified\" && exit 1"
+    "build-example": "browserify -o build/example.js example/cone.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
