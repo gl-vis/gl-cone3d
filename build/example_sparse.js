@@ -2184,9 +2184,29 @@ var bounds = []
 
 var wind = require('./dataset-wind')
 
+
+var meshgrid = [
+  [0, 15, 30, 35, 40, 55, 70],
+  [0, 15, 30, 35, 40, 45, 50],
+  [0, 1, 2, 3, 30, 31, 50]
+];
+
+var getPoint = function(x,y,z) {
+  return [Math.cos(y) * Math.sin(z), Math.sin(x), Math.cos(x)*Math.cos(z)];
+};
+
+var data = [];
+for (var z=0; z<meshgrid[2].length; z++) {
+  for (var y=0; y<meshgrid[1].length; y++) {
+    for (var x=0; x<meshgrid[0].length; x++) {
+      data[z*meshgrid[1].length*meshgrid[0].length + y*meshgrid[0].length + x] = getPoint(meshgrid[0][x], meshgrid[1][y], meshgrid[2][z]);
+    }
+  }
+}
+
 var conePlot = createConePlot({
-  positions: wind.positions,
-  vectors: wind.vectors,
+  meshgrid: meshgrid,
+  vectors: data,
   colormap: 'portland'
 }, bounds)
 
@@ -2203,6 +2223,7 @@ var camera = createCamera(canvas, {
   zoomMax: 500,
   mode: 'turntable'
 })
+
 
 var mesh = createMesh(gl, conePlot)
 

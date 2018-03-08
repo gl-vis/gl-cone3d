@@ -10,8 +10,25 @@ const vec3 = function(x, y, z) {
 	return v;
 }
 
+var createPositionsForMeshgrid = function([xs, ys, zs]) {
+  var positions = [];
+  for (var z=0; z<zs.length; z++) {
+    for (var y=0; y<ys.length; y++) {
+      for (var x=0; x<xs.length; x++) {
+        positions.push([zs[z], ys[y], xs[x]]);
+      }
+    }
+  }
+  return positions;
+};
+
 module.exports = function(vectorfield, bounds) {
-	var positions = vectorfield.positions;
+	var positions;
+	if (vectorfield.positions) {
+		positions = vectorfield.positions;
+	} else {
+		positions = createPositionsForMeshgrid(vectorfield.meshgrid);
+	}
 	var vectors = vectorfield.vectors;
 	let geo = {
 		positions: [],
