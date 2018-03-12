@@ -36,6 +36,7 @@ for (var z=0; z<meshgrid[2].length; z++) {
 var conePlot = createConePlot({
   meshgrid: meshgrid,
   vectors: data,
+  size: 4,
   colormap: 'portland'
 }, bounds)
 

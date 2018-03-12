@@ -66,6 +66,8 @@ module.exports = function(vectorfield, bounds) {
 	let scaleV = V.subtract(vec3(), maxV, minV);
 	let imaxLen = 1 / maxLen;
 
+	let coneScale = vectorfield.size || 2;
+
 	// Build the cone model.
 	for (let i = 0; i < positions.length; i++) {
 
@@ -80,7 +82,7 @@ module.exports = function(vectorfield, bounds) {
 		var intensity = V.length(d);
 
 		// Scale the cone up so that maximum magnitude cone touches the next cone's base.
-		V.scale(d, d, 2);
+		V.scale(d, d, coneScale);
 
 		let v2 = V.subtract(vec3(), v1, d);
 		let u = vec3(0,1,0);
