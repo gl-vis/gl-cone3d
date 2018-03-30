@@ -33,10 +33,20 @@ for (var z=0; z<meshgrid[2].length; z++) {
   }
 }
 
+var positions = [];
+for (var z=0; z<=50; z+=5) {
+  for (var y=0; y<=50; y+=5) {
+    for (var x=0; x<=70; x+=7) {
+      positions.push([x,y,z]);
+    }
+  }
+}
+
 var conePlot = createConePlot({
+  positions: positions,
   meshgrid: meshgrid,
   vectors: data,
-  size: 4,
+  coneSize: 4,
   colormap: 'portland'
 }, bounds)
 
