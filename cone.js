@@ -119,6 +119,20 @@ const sampleMeshgrid = function(point, array, meshgrid, clampOverflow) {
 	return result;
 };
 
+const getOrthogonalVector = function(dst, v) {
+	// Return up-vector for only-z vector.
+	if (v[0] === 0 && v[1] === 0) {
+		V.set(dst, 0, 1, 0);
+	} else {
+		// Return ax + by + cz = 0, a point that lies on the plane that has v as a normal and that isn't (0,0,0).
+		// From the above if-statement we have ||a|| > 0  U  ||b|| > 0.
+		// Assign z = 0, x = -b, y = a:
+		// a*-b + b*a + c*0 = -ba + ba + 0 = 0
+		V.set(dst, -v[1], v[0], 0);
+	}
+	return dst;
+};
+
 module.exports = function(vectorfield, bounds) {
 	var positions;
 	if (vectorfield.positions) {
@@ -194,11 +208,13 @@ module.exports = function(vectorfield, bounds) {
 		V.scale(d, d, coneScale);
 
 		let v2 = V.subtract(vec3(), v1, d);
-		let u = vec3(0,1,0);
-		V.cross(u, u, d);
+
+		// Build tangent and bitangent vectors for the direction vector.
+		// Use them to build the base of the cone.
+		let u = getOrthogonalVector(vec3(), d);
 		V.normalize(u, u);
 		let v = V.cross(vec3(),u,d);
-		V.normalize(v,v);
+		V.normalize(v, v);
 		let v4, n4;
 		let nback = V.clone(d);
 		V.normalize(nback, nback);
