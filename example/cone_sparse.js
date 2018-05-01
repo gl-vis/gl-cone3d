@@ -8,18 +8,45 @@ var getBounds    = require('bound-points')
 var mouseChange  = require('mouse-change')
 var createMesh   = require('gl-mesh3d')
 var createConePlot = require('../cone')
-var createShader = require('gl-shader')
-var mat4 = require('gl-mat4')
-
-var shaders = require('../lib/shaders')
 
 var bounds = []
 
 var wind = require('./dataset-wind')
 
+
+var meshgrid = [
+  [0, 15, 30, 35, 40, 55, 70],
+  [0, 15, 30, 35, 40, 45, 50],
+  [0, 1, 2, 3, 30, 31, 50]
+];
+
+var getPoint = function(x,y,z) {
+  return [Math.cos(y) * Math.sin(z), Math.sin(x), Math.cos(x)*Math.cos(z)];
+};
+
+var data = [];
+for (var z=0; z<meshgrid[2].length; z++) {
+  for (var y=0; y<meshgrid[1].length; y++) {
+    for (var x=0; x<meshgrid[0].length; x++) {
+      data[z*meshgrid[1].length*meshgrid[0].length + y*meshgrid[0].length + x] = getPoint(meshgrid[0][x], meshgrid[1][y], meshgrid[2][z]);
+    }
+  }
+}
+
+var positions = [];
+for (var z=0; z<=50; z+=5) {
+  for (var y=0; y<=50; y+=5) {
+    for (var x=0; x<=70; x+=7) {
+      positions.push([x,y,z]);
+    }
+  }
+}
+
 var conePlot = createConePlot({
-  positions: wind.positions,
-  vectors: wind.vectors,
+  positions: positions,
+  meshgrid: meshgrid,
+  vectors: data,
+  coneSize: 4,
   colormap: 'portland'
 }, bounds)
 
@@ -37,19 +64,6 @@ var camera = createCamera(canvas, {
   mode: 'turntable'
 })
 
-conePlot.colormap = 'portland'
-
-function createConeShader(gl, meshShader) {
-  var shader = createShader(gl, meshShader.vertex, meshShader.fragment)
-  shader.attributes.position.location = 0
-  shader.attributes.color.location    = 2
-  shader.attributes.uv.location       = 3
-  shader.attributes.vector.location   = 5
-//  shader.uniforms.vectorScale = conePlot.vectorScale;
-  return shader
-}
-var shader = createConeShader(gl, shaders.meshShader)
-conePlot.triShader = shader;
 
 var mesh = createMesh(gl, conePlot)
 
@@ -88,27 +102,18 @@ mouseChange(canvas, function(buttons, x, y) {
   }
 })
 
-var modelMat = mat4.create();
-
 function render() {
   requestAnimationFrame(render)
 
   gl.enable(gl.DEPTH_TEST)
 
-  mat4.identity(modelMat);
-  mat4.translate(modelMat, modelMat, [100, 40, 8]);
-  mat4.scale(modelMat, modelMat, [2*Math.cos(Date.now()/4000), 2*Math.sin(Date.now()/5000), 4*Math.sin(Date.now()/7400)])
-  mat4.rotate(modelMat, modelMat, Date.now()/10000, [Math.cos(Date.now()/24000), Math.sin(Date.now()/15000), Math.cos(Date.now()/19000)])
-  mat4.translate(modelMat, modelMat, [-100, -40, -8]);
-
   var needsUpdate = camera.tick()
   var cameraParams = {
-    projection: perspective([], Math.PI/4, canvas.width/canvas.height, 1, 300),
-    view: camera.matrix,
-    model: modelMat
+    projection: perspective([], Math.PI/4, canvas.width/canvas.height, 0.01, 1000),
+    view: camera.matrix
   }
 
-  if(true || needsUpdate || spikeChanged) {
+  if(needsUpdate || spikeChanged) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
     gl.viewport(0, 0, canvas.width, canvas.height)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
@@ -118,7 +123,7 @@ function render() {
     spikeChanged = false
   }
 
-  if(true || needsUpdate) {
+  if(needsUpdate) {
     select.shape = [canvas.width, canvas.height]
     select.begin()
     mesh.drawPick(cameraParams)
