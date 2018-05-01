@@ -23,7 +23,7 @@
     "gl-spikes3d": "^1.0.5"
   },
   "scripts": {
-    "build-example": "browserify -o build/example.js example/cone.js && browserify -o build/example_sparse.js example/cone_sparse.js",
+    "build-example": "browserify -o build/example.js example/cone.js && browserify -o build/example_sparse.js example/cone_sparse.js && browserify -o build/example_minimal.js example/cone_minimal.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

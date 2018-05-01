@@ -21,6 +21,20 @@ varying vec3 f_normal
 varying vec4 f_color;
 varying vec2 f_uv;
 
+
+vec3 getOrthogonalVector(vec3 v) {
+  // Return up-vector for only-z vector.
+  // Return ax + by + cz = 0, a point that lies on the plane that has v as a normal and that isn't (0,0,0).
+  // From the above if-statement we have ||a|| > 0  U  ||b|| > 0.
+  // Assign z = 0, x = -b, y = a:
+  // a*-b + b*a + c*0 = -ba + ba + 0 = 0
+  if (v.x*v.x > 0.1 || v.y*v.y > 0.1) {
+    return normalize(vec3(-v.y, v.x, 0.0)); 
+  } else {
+    return normalize(vec3(0.0, v.z, -v.y));
+  }
+}
+
 // Calculate the cone vertex and normal at the given index.
 //
 // The returned vertex is for a cone with its top at origin and height of 1.0, 
@@ -61,11 +75,7 @@ vec3 getConePosition(vec3 d, float index, out vec3 normal) {
   vec3 v1 = vec3(0.0);
   vec3 v2 = v1 - d;
 
-  vec3 u = vec3(0.0, 1.0, 0.0);
-  if (u == -normal) {
-    u = vec3(1.0, 0.0, 0.0);
-  }
-  u = normalize(cross(u, d));
+  vec3 u = getOrthogonalVector(d);
   vec3 v = normalize(cross(u, d));
 
   vec3 x = u * cos(angle) * length(d)*0.25;
