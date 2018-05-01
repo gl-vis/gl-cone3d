@@ -9,6 +9,7 @@ var mouseChange  = require('mouse-change')
 var createMesh   = require('gl-mesh3d')
 var createConePlot = require('../cone')
 var createShader = require('gl-shader')
+var mat4 = require('gl-mat4')
 
 var shaders = require('../lib/shaders')
 
@@ -32,20 +33,20 @@ var camera = createCamera(canvas, {
 })
 
 conePlot.colormap = 'portland'
-var mesh = createMesh(gl, conePlot)
 
 function createConeShader(gl, meshShader) {
   var shader = createShader(gl, meshShader.vertex, meshShader.fragment)
   shader.attributes.position.location = 0
   shader.attributes.color.location    = 2
   shader.attributes.uv.location       = 3
-  shader.attributes.vector.location   = 4
-  shader.uniforms.vectorScale = conePlot.vectorScale;
+  shader.attributes.vector.location   = 5
+//  shader.uniforms.vectorScale = conePlot.vectorScale;
   return shader
 }
-
 var shader = createConeShader(gl, shaders.meshShader)
-mesh.triShader = shader
+conePlot.triShader = shader;
+
+var mesh = createMesh(gl, conePlot)
 
 var select = createSelect(gl, [canvas.width, canvas.height])
 var tickSpacing = 5;
@@ -82,18 +83,27 @@ mouseChange(canvas, function(buttons, x, y) {
   }
 })
 
+var modelMat = mat4.create();
+
 function render() {
   requestAnimationFrame(render)
 
   gl.enable(gl.DEPTH_TEST)
 
+  mat4.identity(modelMat);
+  mat4.translate(modelMat, modelMat, [100, 40, 8]);
+  mat4.scale(modelMat, modelMat, [2*Math.cos(Date.now()/4000), 2*Math.sin(Date.now()/5000), 4*Math.sin(Date.now()/7400)])
+  mat4.rotate(modelMat, modelMat, Date.now()/10000, [Math.cos(Date.now()/24000), Math.sin(Date.now()/15000), Math.cos(Date.now()/19000)])
+  mat4.translate(modelMat, modelMat, [-100, -40, -8]);
+
   var needsUpdate = camera.tick()
   var cameraParams = {
-    projection: perspective([], Math.PI/4, canvas.width/canvas.height, 0.01, 1000),
-    view: camera.matrix
+    projection: perspective([], Math.PI/4, canvas.width/canvas.height, 1, 300),
+    view: camera.matrix,
+    model: modelMat
   }
 
-  if(needsUpdate || spikeChanged) {
+  if(true || needsUpdate || spikeChanged) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
     gl.viewport(0, 0, canvas.width, canvas.height)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
@@ -103,7 +113,7 @@ function render() {
     spikeChanged = false
   }
 
-  if(needsUpdate) {
+  if(true || needsUpdate) {
     select.shape = [canvas.width, canvas.height]
     select.begin()
     mesh.drawPick(cameraParams)

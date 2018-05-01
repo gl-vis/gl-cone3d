@@ -1,16 +1,17 @@
 precision mediump float;
 
+#pragma glslify: inverse = require(glsl-inverse)
+
 attribute vec3 vector;
 attribute vec4 color, position;
 attribute vec2 uv;
+uniform float vectorScale;
 
 uniform mat4 model
            , view
            , projection;
 uniform vec3 eyePosition
            , lightPosition;
-
-uniform float vectorScale;
 
 varying vec3 f_normal
            , f_lightDirection
@@ -37,14 +38,15 @@ varying vec2 f_uv;
 // To go from segment to angle, 2*pi * (segment/segmentCount)
 // To go from index to segment index, index - (segment*6)
 //
-vec3 getConePosition(float index, out vec3 normal) {
+vec3 getConePosition(vec3 d, float index, out vec3 normal) {
 
   const float segmentCount = 8.0;
+
+  index = mod(index, segmentCount * 6.0);
 
   float segment = floor(index/6.0);
   float segmentIndex = index - (segment*6.0);
 
-  vec3 d = vectorScale * vector;
   normal = -normalize(d);
 
   if (segmentIndex == 3.0) {
@@ -82,16 +84,19 @@ vec3 getConePosition(float index, out vec3 normal) {
 }
 
 void main() {
+  // Scale the vector magnitude to stay constant with
+  // model & view changes.
   vec3 normal;
-  vec3 conePosition = position.xyz + getConePosition(position.w, normal);
+  vec4 conePosition = model * vec4(position.xyz, 1.0) + vec4(getConePosition(mat3(model) * 0.03 * vector, position.w, normal), 0.0);
+  normal = normalize(normal * inverse(mat3(model)));
 
-  vec4 m_position  = model * vec4(conePosition, 1.0);
-  vec4 t_position  = view * m_position;
+  // vec4 m_position  = model * vec4(conePosition, 1.0);
+  vec4 t_position  = view * conePosition;
   gl_Position      = projection * t_position;
-  f_color          = color;
+  f_color          = color; //vec4(position.w, color.r, 0, 0);
   f_normal         = normal;
-  f_data           = conePosition;
-  f_eyeDirection   = eyePosition   - conePosition;
-  f_lightDirection = lightPosition - conePosition;
+  f_data           = conePosition.xyz;
+  f_eyeDirection   = eyePosition   - conePosition.xyz;
+  f_lightDirection = lightPosition - conePosition.xyz;
   f_uv             = uv;
 }

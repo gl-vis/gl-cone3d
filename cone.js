@@ -1,6 +1,7 @@
 "use strict";
 
 const V = require('gl-vec3');
+const V4 = require('gl-vec4');
 
 const vec3 = function(x, y, z) {
 	let v = V.create();
@@ -47,11 +48,26 @@ module.exports = function(vectorfield, bounds) {
 		bounds[1] = maxV;
 	}
 	let scaleV = V.subtract(vec3(), maxV, minV);
-	let imaxLen = 1 / maxLen;
+	let imaxLen = 1 / (maxLen * V.length(scaleV));
 
 	geo.vectorScale = imaxLen;
 
 	let nml = vec3(0,1,0);
+
+	/*
+		Port this over to the magical land of master branch. 
+
+		How?
+
+		Port the attribute setting over to master mesh.
+		Port the vertex and fragment shaders next.
+		Then this model builder.
+
+		After the master merge, pull the changes to the
+		plotly.js playground and test with the test scenes.
+		
+
+	*/
 
 	// Build the cone model.
 	for (let i = 0, j = 0; i < positions.length; i++) {
@@ -83,60 +99,75 @@ module.exports = function(vectorfield, bounds) {
 		}
 	}
 
-		/*
+		
 
-		// Vector at point i, scaled down by maximum magnitude.
-		let d = vectors[i];
-		V.scale(d, d, imaxLen);
+		// // Vector at point i, scaled down by maximum magnitude.
+		// let d = vectors[i];
+		// V.scale(d, d, imaxLen);
 
-		// Position at point i.
-		let v1 = positions[i];
+		// // Position at point i.
+		// let v1 = positions[i];
 
-		// Intensity for the cone.
-		var intensity = V.length(d);
+		// // Intensity for the cone.
+		// var intensity = V.length(d);
 
-		// Scale the cone up so that maximum magnitude cone touches the next cone's base.
-		V.scale(d, d, 2);
+		// // Scale the cone up so that maximum magnitude cone touches the next cone's base.
+		// V.scale(d, d, 2);
 
-		let v2 = V.subtract(vec3(), v1, d);
-		let u = vec3(0,1,0);
-		V.cross(u, u, d);
-		V.normalize(u, u);
-		let v = V.cross(vec3(),u,d);
-		V.normalize(v,v);
-		let v4, n4;
-		let nback = V.clone(d);
-		V.normalize(nback, nback);
-		V.negate(nback, nback);
-		for (let k = 0, l = 8; k <= l; k++) {
-			let a = k/l * Math.PI*2;
-			let x = V.scale(vec3(), u, Math.cos(a)*V.length(d)*0.25);
-			let y = V.scale(vec3(), v, Math.sin(a)*V.length(d)*0.25);
-			let tx = V.scale(vec3(), u, Math.sin(a));
-			let ty = V.scale(vec3(), v, -Math.cos(a));
-			let v3 = V.add(vec3(), v2, x);
-			V.add(v3, v3, y);
-			let t3 = V.add(vec3(), tx, ty);
-			let n3 = V.subtract(vec3(), v3, v1);
-			V.cross(n3, n3, t3);
-			V.normalize(n3, n3);
-			if (k > 0) {
-				geo.positions.push(v3, v4, v1);
-				geo.vertexIntensity.push(intensity, intensity, intensity);
-				geo.vertexNormals.push(n3, n4, n3);
+		// let v2 = V.subtract(vec3(), v1, d);
+		// let u = vec3(0,1,0);
+		// V.cross(u, u, d);
+		// V.normalize(u, u);
+		// let v = V.cross(vec3(),u,d);
+		// V.normalize(v,v);
+		// let v4, n4;
+		// let nback = V.clone(d);
+		// V.normalize(nback, nback);
+		// V.negate(nback, nback);
+		// for (let k = 0, l = 8; k <= l; k++) {
+		// 	let a = k/l * Math.PI*2;
+		// 	let x = V.scale(vec3(), u, Math.cos(a)*V.length(d)*0.25);
+		// 	let y = V.scale(vec3(), v, Math.sin(a)*V.length(d)*0.25);
+		// 	let tx = V.scale(vec3(), u, Math.sin(a));
+		// 	let ty = V.scale(vec3(), v, -Math.cos(a));
+		// 	let v3 = V.add(vec3(), v2, x);
+		// 	V.add(v3, v3, y);
+		// 	let t3 = V.add(vec3(), tx, ty);
+		// 	let n3 = V.subtract(vec3(), v3, v1);
+		// 	V.cross(n3, n3, t3);
+		// 	V.normalize(n3, n3);
+		// 	if (k > 0) {
+		// 		geo.positions.push(
+		// 			[v1[0], v1[1], v1[2], j++], 
+		// 			[v1[0], v1[1], v1[2], j++],
+		// 			[v1[0], v1[1], v1[2], j++]
+		// 		);
+		// 		geo.vertexIntensity.push(intensity, intensity, intensity);
+		// 		geo.vertexNormals.push(n3, n4, n3);
 
-				geo.positions.push(v2, v4, v3);
-				geo.vertexIntensity.push(intensity, intensity, intensity);
-				geo.vertexNormals.push(nback, nback, nback);
+		// 		geo.positions.push(
+		// 			[v1[0], v1[1], v1[2], j++],
+		// 			[v1[0], v1[1], v1[2], j++],
+		// 			[v1[0], v1[1], v1[2], j++]
+		// 		);
+		// 		geo.vertexIntensity.push(intensity, intensity, intensity);
+		// 		geo.vertexNormals.push(nback, nback, nback);
 
-				let m = geo.positions.length;
-				geo.cells.push([m-6, m-5, m-4], [m-3, m-2, m-1]);
-			}
-			v4 = v3;
-			n4 = n3;
-		}
-	}
-	*/
+		// 		geo.vectors.push(vectors[i]);
+		// 		geo.vectors.push(vectors[i]);
+		// 		geo.vectors.push(vectors[i]);
+		// 		geo.vectors.push(vectors[i]);
+		// 		geo.vectors.push(vectors[i]);
+		// 		geo.vectors.push(vectors[i]);
+
+		// 		let m = geo.positions.length;
+		// 		geo.cells.push([m-6, m-5, m-4], [m-3, m-2, m-1]);
+		// 	}
+		// 	v4 = v3;
+		// 	n4 = n3;
+		// }
+	// }
+	
 
 	return geo;
 };
