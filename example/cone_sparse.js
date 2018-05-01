@@ -6,7 +6,7 @@ var createSpikes = require('gl-spikes3d')
 var createSelect = require('gl-select-static')
 var getBounds    = require('bound-points')
 var mouseChange  = require('mouse-change')
-var createMesh   = require('gl-mesh3d')
+var createMesh   = require('../lib/conemesh')
 var createConePlot = require('../cone')
 
 var bounds = []
@@ -46,7 +46,7 @@ var conePlot = createConePlot({
   positions: positions,
   meshgrid: meshgrid,
   vectors: data,
-  coneSize: 4,
+  coneSize: 1,
   colormap: 'portland'
 }, bounds)
 
@@ -109,7 +109,7 @@ function render() {
 
   var needsUpdate = camera.tick()
   var cameraParams = {
-    projection: perspective([], Math.PI/4, canvas.width/canvas.height, 0.01, 1000),
+    projection: perspective([], Math.PI/4, canvas.width/canvas.height, 0.1, 300),
     view: camera.matrix
   }
 

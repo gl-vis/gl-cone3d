@@ -6,6 +6,7 @@ attribute vec3 vector;
 attribute vec4 color, position;
 attribute vec2 uv;
 uniform float vectorScale;
+uniform float coneScale;
 
 uniform mat4 model
            , view
@@ -87,7 +88,7 @@ void main() {
   // Scale the vector magnitude to stay constant with
   // model & view changes.
   vec3 normal;
-  vec4 conePosition = model * vec4(position.xyz, 1.0) + vec4(getConePosition(mat3(model) * 0.03 * vector, position.w, normal), 0.0);
+  vec4 conePosition = model * vec4(position.xyz, 1.0) + vec4(getConePosition(mat3(model) * ((vectorScale * coneScale) * vector), position.w, normal), 0.0);
   normal = normalize(normal * inverse(mat3(model)));
 
   // vec4 m_position  = model * vec4(conePosition, 1.0);

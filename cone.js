@@ -158,7 +158,9 @@ module.exports = function(vectorfield, bounds) {
 	let minX = 1/0, maxX = -1/0;
 	let minY = 1/0, maxY = -1/0;
 	let minZ = 1/0, maxZ = -1/0;
+	let v2 = null;
 	let positionVectors = [];
+	let minSeparation = 1/0;
 	for (let i = 0; i < positions.length; i++) {
 		let v1 = positions[i];
 		minX = Math.min(v1[0], minX);
@@ -176,6 +178,13 @@ module.exports = function(vectorfield, bounds) {
 		if (V.length(u) > maxLen) {
 			maxLen = V.length(u);
 		}
+		if (v2) {
+			let separation = V.distance(v1, v2);
+			if (separation < minSeparation) {
+				minSeparation = separation;
+			}
+		}
+		v2 = v1;
 		positionVectors.push(u);
 	}
 	let minV = [minX, minY, minZ];
@@ -185,32 +194,19 @@ module.exports = function(vectorfield, bounds) {
 		bounds[1] = maxV;
 	}
 	let scaleV = V.subtract(vec3(), maxV, minV);
-	let imaxLen = 1 / (maxLen * V.length(scaleV));
+	let imaxLen = 1 / maxLen;
 
-	geo.vectorScale = imaxLen;
+	geo.vectorScale = imaxLen * minSeparation;
 
 	let nml = vec3(0,1,0);
 
-	/*
-		Port this over to the magical land of master branch. 
-
-		How?
-
-		Port the attribute setting over to master mesh.
-		Port the vertex and fragment shaders next.
-		Then this model builder.
-
-		After the master merge, pull the changes to the
-		plotly.js playground and test with the test scenes.
-		
-
-	*/
-
-	let coneScale = vectorfield.coneSize || 2;
+	let coneScale = vectorfield.coneSize || 0.5;
 
 	if (vectorfield.absoluteConeSize) {
-		coneScale = vectorfield.absoluteConeSize * maxLen;
+		coneScale = vectorfield.absoluteConeSize * imaxLen;
 	}
+
+	geo.coneScale = coneScale;
 
 	// Build the cone model.
 	for (let i = 0, j = 0; i < positions.length; i++) {

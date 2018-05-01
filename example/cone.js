@@ -78,6 +78,8 @@ mouseChange(canvas, function(buttons, x, y) {
 
 var modelMat = mat4.create();
 
+var vectorScale = mesh.vectorScale;
+
 function render() {
   requestAnimationFrame(render)
 
@@ -95,6 +97,8 @@ function render() {
     view: camera.matrix,
     model: modelMat
   }
+
+  // mesh.vectorScale = vectorScale * Math.abs(Math.sin(Date.now()/500))*4;
 
   if(true || needsUpdate || spikeChanged) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
