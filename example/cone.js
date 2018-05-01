@@ -39,18 +39,6 @@ var camera = createCamera(canvas, {
 
 conePlot.colormap = 'portland'
 
-function createConeShader(gl, meshShader) {
-  var shader = createShader(gl, meshShader.vertex, meshShader.fragment)
-  shader.attributes.position.location = 0
-  shader.attributes.color.location    = 2
-  shader.attributes.uv.location       = 3
-  shader.attributes.vector.location   = 5
-//  shader.uniforms.vectorScale = conePlot.vectorScale;
-  return shader
-}
-var shader = createConeShader(gl, shaders.meshShader)
-conePlot.triShader = shader;
-
 var mesh = createMesh(gl, conePlot)
 
 var select = createSelect(gl, [canvas.width, canvas.height])
