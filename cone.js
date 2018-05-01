@@ -241,3 +241,5 @@ module.exports = function(vectorfield, bounds) {
 
 	return geo;
 };
+
+module.exports.createConeMesh = require('./lib/conemesh');

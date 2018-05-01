@@ -6,10 +6,11 @@ var createSpikes = require('gl-spikes3d')
 var createSelect = require('gl-select-static')
 var getBounds    = require('bound-points')
 var mouseChange  = require('mouse-change')
-var createMesh   = require('../lib/conemesh')
 var createConePlot = require('../cone')
 var createShader = require('gl-shader')
 var mat4 = require('gl-mat4')
+
+var createMesh = createConePlot.createConeMesh;
 
 var shaders = require('../lib/shaders')
 
