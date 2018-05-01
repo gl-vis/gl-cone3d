@@ -28,7 +28,7 @@ vec3 getOrthogonalVector(vec3 v) {
   // From the above if-statement we have ||a|| > 0  U  ||b|| > 0.
   // Assign z = 0, x = -b, y = a:
   // a*-b + b*a + c*0 = -ba + ba + 0 = 0
-  if (v.x*v.x > 0.1 || v.y*v.y > 0.1) {
+  if (v.x*v.x > v.z*v.z || v.y*v.y > v.z*v.z) {
     return normalize(vec3(-v.y, v.x, 0.0)); 
   } else {
     return normalize(vec3(0.0, v.z, -v.y));
