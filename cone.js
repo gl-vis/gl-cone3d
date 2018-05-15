@@ -1,17 +1,18 @@
 "use strict";
 
-const V = require('gl-vec3');
-const V4 = require('gl-vec4');
+var V = require('gl-vec3');
+var V4 = require('gl-vec4');
 
-const vec3 = function(x, y, z) {
-	let v = V.create();
+var vec3 = function(x, y, z) {
+	var v = V.create();
 	if (x !== undefined) {
 		V.set(v, x, y, z);
 	}
 	return v;
 }
 
-var createPositionsForMeshgrid = function([xs, ys, zs]) {
+var createPositionsForMeshgrid = function(xs, ys, zs) {
+  var xs = meshgrid[0], ys = meshgrid[1], zs = meshgrid[2];
   var positions = [];
   for (var z=0; z<zs.length; z++) {
     for (var y=0; y<ys.length; y++) {
@@ -23,7 +24,7 @@ var createPositionsForMeshgrid = function([xs, ys, zs]) {
   return positions;
 };
 
-const findLastSmallerIndex = function(points, v) {
+var findLastSmallerIndex = function(points, v) {
   for (var i=0; i<points.length; i++) {
     if (points[i] >= v) {
       return i-1;
@@ -32,17 +33,17 @@ const findLastSmallerIndex = function(points, v) {
   return i;
 };
 
-const tmp = V.create();
-const tmp2 = V.create();
+var tmp = V.create();
+var tmp2 = V.create();
 
-const clamp = function(v, min, max) {
+var clamp = function(v, min, max) {
 	return v < min ? min : (v > max ? max : v);
 };
 
-const sampleMeshgrid = function(point, array, meshgrid, clampOverflow) {
-	const x = point[0];
-	const y = point[1];
-	const z = point[2];
+var sampleMeshgrid = function(point, array, meshgrid, clampOverflow) {
+	var x = point[0];
+	var y = point[1];
+	var z = point[2];
 
 	var w = meshgrid[0].length;
 	var h = meshgrid[1].length;
@@ -120,7 +121,7 @@ const sampleMeshgrid = function(point, array, meshgrid, clampOverflow) {
 	return result;
 };
 
-const getOrthogonalVector = function(dst, v) {
+var getOrthogonalVector = function(dst, v) {
 	// Return up-vector for only-z vector.
 	if (v[0] === 0 && v[1] === 0) {
 		V.set(dst, 0, 1, 0);
@@ -143,7 +144,7 @@ module.exports = function(vectorfield, bounds) {
 	}
 	var meshgrid = vectorfield.meshgrid;
 	var vectors = vectorfield.vectors;
-	let geo = {
+	var geo = {
 		positions: [],
 		vertexIntensity: [],
 		vertexNormals: [],
@@ -154,22 +155,22 @@ module.exports = function(vectorfield, bounds) {
 
 	// Compute bounding box for the dataset.
 	// Compute maximum velocity for the dataset to use for scaling the cones.
-	let maxLen = 0;
-	let minX = 1/0, maxX = -1/0;
-	let minY = 1/0, maxY = -1/0;
-	let minZ = 1/0, maxZ = -1/0;
-	let v2 = null;
-	let positionVectors = [];
-	let minSeparation = 1/0;
-	for (let i = 0; i < positions.length; i++) {
-		let v1 = positions[i];
+	var maxLen = 0;
+	var minX = 1/0, maxX = -1/0;
+	var minY = 1/0, maxY = -1/0;
+	var minZ = 1/0, maxZ = -1/0;
+	var v2 = null;
+	var positionVectors = [];
+	var minSeparation = 1/0;
+	for (var i = 0; i < positions.length; i++) {
+		var v1 = positions[i];
 		minX = Math.min(v1[0], minX);
 		maxX = Math.max(v1[0], maxX);
 		minY = Math.min(v1[1], minY);
 		maxY = Math.max(v1[1], maxY);
 		minZ = Math.min(v1[2], minZ);
 		maxZ = Math.max(v1[2], maxZ);
-		let u;
+		var u;
 		if (meshgrid) {
 			u = sampleMeshgrid(v1, vectors, meshgrid, true);
 		} else {
@@ -179,7 +180,7 @@ module.exports = function(vectorfield, bounds) {
 			maxLen = V.length(u);
 		}
 		if (v2) {
-			let separation = V.distance(v1, v2);
+			var separation = V.distance(v1, v2);
 			if (separation < minSeparation) {
 				minSeparation = separation;
 			}
@@ -187,20 +188,20 @@ module.exports = function(vectorfield, bounds) {
 		v2 = v1;
 		positionVectors.push(u);
 	}
-	let minV = [minX, minY, minZ];
-	let maxV = [maxX, maxY, maxZ];
+	var minV = [minX, minY, minZ];
+	var maxV = [maxX, maxY, maxZ];
 	if (bounds) {
 		bounds[0] = minV;
 		bounds[1] = maxV;
 	}
-	let scaleV = V.subtract(vec3(), maxV, minV);
-	let imaxLen = 1 / maxLen;
+	var scaleV = V.subtract(vec3(), maxV, minV);
+	var imaxLen = 1 / maxLen;
 
 	geo.vectorScale = imaxLen * minSeparation;
 
-	let nml = vec3(0,1,0);
+	var nml = vec3(0,1,0);
 
-	let coneScale = vectorfield.coneSize || 0.5;
+	var coneScale = vectorfield.coneSize || 0.5;
 
 	if (vectorfield.absoluteConeSize) {
 		coneScale = vectorfield.absoluteConeSize * imaxLen;
@@ -209,11 +210,12 @@ module.exports = function(vectorfield, bounds) {
 	geo.coneScale = coneScale;
 
 	// Build the cone model.
-	for (let i = 0, j = 0; i < positions.length; i++) {
-		let [x,y,z] = positions[i];
-		let d = positionVectors[i];
-		let intensity = V.length(d) * imaxLen;
-		for (let k = 0, l = 8; k < l; k++) {
+	for (var i = 0, j = 0; i < positions.length; i++) {
+        var p = positions[i];
+		var x = p[0], y = p[1], z = p[2];
+		var d = positionVectors[i];
+		var intensity = V.length(d) * imaxLen;
+		for (var k = 0, l = 8; k < l; k++) {
 			geo.positions.push([x, y, z, j++]);
 			geo.positions.push([x, y, z, j++]);
 			geo.positions.push([x, y, z, j++]);
@@ -234,7 +236,7 @@ module.exports = function(vectorfield, bounds) {
 			geo.vertexNormals.push(nml, nml, nml);
 			geo.vertexNormals.push(nml, nml, nml);
 
-			let m = geo.positions.length;
+			var m = geo.positions.length;
 			geo.cells.push([m-6, m-5, m-4], [m-3, m-2, m-1]);
 		}
 	}
