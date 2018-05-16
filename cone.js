@@ -11,7 +11,7 @@ var vec3 = function(x, y, z) {
 	return v;
 }
 
-var createPositionsForMeshgrid = function(xs, ys, zs) {
+var createPositionsForMeshgrid = function(meshgrid) {
   var xs = meshgrid[0], ys = meshgrid[1], zs = meshgrid[2];
   var positions = [];
   for (var z=0; z<zs.length; z++) {
