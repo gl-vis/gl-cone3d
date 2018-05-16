@@ -147,6 +147,7 @@ module.exports = function(vectorfield, bounds) {
 	var geo = {
 		positions: [],
 		vertexIntensity: [],
+		vertexIntensityBounds: vectorfield.vertexIntensityBounds,
 		vertexNormals: [],
 		vectors: [],
 		cells: [],
