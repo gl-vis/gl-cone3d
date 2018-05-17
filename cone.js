@@ -12,25 +12,25 @@ var vec3 = function(x, y, z) {
 }
 
 var createPositionsForMeshgrid = function(meshgrid) {
-  var xs = meshgrid[0], ys = meshgrid[1], zs = meshgrid[2];
-  var positions = [];
-  for (var z=0; z<zs.length; z++) {
-    for (var y=0; y<ys.length; y++) {
-      for (var x=0; x<xs.length; x++) {
-        positions.push([zs[z], ys[y], xs[x]]);
-      }
-    }
-  }
-  return positions;
+	var xs = meshgrid[0], ys = meshgrid[1], zs = meshgrid[2];
+	var positions = [];
+	for (var z=0; z<zs.length; z++) {
+		for (var y=0; y<ys.length; y++) {
+			for (var x=0; x<xs.length; x++) {
+				positions.push([zs[z], ys[y], xs[x]]);
+			}
+		}
+	}
+	return positions;
 };
 
 var findLastSmallerIndex = function(points, v) {
-  for (var i=0; i<points.length; i++) {
-    if (points[i] >= v) {
-      return i-1;
-    }
-  }
-  return i;
+	for (var i=0; i<points.length; i++) {
+		if (points[i] >= v) {
+			return i-1;
+		}
+	}
+	return i;
 };
 
 var tmp = V.create();
@@ -212,7 +212,7 @@ module.exports = function(vectorfield, bounds) {
 
 	// Build the cone model.
 	for (var i = 0, j = 0; i < positions.length; i++) {
-        var p = positions[i];
+		var p = positions[i];
 		var x = p[0], y = p[1], z = p[2];
 		var d = positionVectors[i];
 		var intensity = V.length(d) * imaxLen;
