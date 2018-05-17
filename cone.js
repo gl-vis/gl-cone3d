@@ -243,6 +243,11 @@ module.exports = function(vectorfield, bounds) {
 		}
 	}
 
+	// in case someone (e.g. plotly.js) want
+	// to draw a gl-scatter3d object at these positions
+	geo._positions = positions;
+	geo._vectors = positionVectors;
+
 	return geo;
 };
 
