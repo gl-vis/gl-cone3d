@@ -151,6 +151,7 @@ module.exports = function(vectorfield, bounds) {
 		vertexNormals: [],
 		vectors: [],
 		cells: [],
+		coneOffset: vectorfield.coneOffset,
 		colormap: vectorfield.colormap
 	};
 

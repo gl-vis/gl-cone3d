@@ -8,6 +8,8 @@ attribute vec2 uv;
 uniform float vectorScale;
 uniform float coneScale;
 
+uniform float coneOffset;
+
 uniform mat4 model
            , view
            , projection;
@@ -65,14 +67,14 @@ vec3 getConePosition(vec3 d, float index, out vec3 normal) {
   normal = -normalize(d);
 
   if (segmentIndex == 3.0) {
-    return -d;
+    return mix(vec3(0.0), -d, coneOffset);
   }
 
   // angle = 2pi * ((segment + ((segmentIndex == 1.0 || segmentIndex == 5.0) ? 1.0 : 0.0)) / segmentCount)
   float nextAngle = float(segmentIndex == 1.0 || segmentIndex == 5.0);
   float angle = 2.0 * 3.14159 * ((segment + nextAngle) / segmentCount);
 
-  vec3 v1 = vec3(0.0);
+  vec3 v1 = mix(d, vec3(0.0), coneOffset);
   vec3 v2 = v1 - d;
 
   vec3 u = getOrthogonalVector(d);
@@ -89,7 +91,7 @@ vec3 getConePosition(vec3 d, float index, out vec3 normal) {
   }
 
   if (segmentIndex == 0.0) {
-    return vec3(0.0);
+    return mix(d, vec3(0.0), coneOffset);
   }
   return v3;
 }

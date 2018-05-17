@@ -48,6 +48,7 @@ Creates a cone plot of a vector field.
     + `meshgrid` Meshgrid for the vectors data array. Given as three arrays of numbers [xcoords, ycoords, zcoords]. E.g. meshgrid: [[1,2,3], [-1,0,1], [0,10,20,30,40,50]].
     + `coneSize` Size of the cones, scaled so that the reference cone size for the maximum vector magnitude is 1
     + `absoluteConeSize` Size of the cones, scaled so that the reference cone size for vector magnitude 1 is one grid unit.
+    + `coneOffset` The position of the cone with regard to the cone location. Ranges from 0 to 1 where 0 puts the center of the cone base at the cone location, and 1 puts the tip at the cone location.
     + `colormap` Colormap for the cone plot.
 
 **Returns** A cone plot object that can be passed to gl-mesh3d.
