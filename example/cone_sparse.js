@@ -56,7 +56,7 @@ window.addEventListener('resize', require('canvas-fit')(canvas))
 var gl = canvas.getContext('webgl')
 
 var camera = createCamera(canvas, {
-  eye:    bounds[0],
+  eye:    [100,100,100],
   center: [0.5*(bounds[0][0]+bounds[1][0]),
            0.5*(bounds[0][1]+bounds[1][1]),
            0.5*(bounds[0][2]+bounds[1][2])],
