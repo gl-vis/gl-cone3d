@@ -2372,8 +2372,8 @@ var createMesh = createConePlot.createConeMesh;
 var bounds = []
 
 var conePlot = createConePlot({
-  positions: [[0.5, 0.5, 0.5], [1,1,1], [1.5, 1.5, 1.5]],
-  vectors: [[0.05, 0, 0], [0, 0.05, 0], [0, 0, 0.05]],
+  positions: [[0.5, 0.5, 0.5]],
+  vectors: [[0.05, 0, 0]],
   colormap: 'portland'
 }, bounds)
 

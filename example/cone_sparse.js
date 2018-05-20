@@ -56,7 +56,7 @@ window.addEventListener('resize', require('canvas-fit')(canvas))
 var gl = canvas.getContext('webgl')
 
 var camera = createCamera(canvas, {
-  eye:    bounds[0],
+  eye:    [100,100,100],
   center: [0.5*(bounds[0][0]+bounds[1][0]),
            0.5*(bounds[0][1]+bounds[1][1]),
            0.5*(bounds[0][2]+bounds[1][2])],
@@ -69,7 +69,7 @@ var mesh = createMesh(gl, conePlot)
 
 var select = createSelect(gl, [canvas.width, canvas.height])
 var tickSpacing = 5;
-var ticks = bounds[0].map((v,i) => {
+var ticks = bounds[0].map(function(v,i) {
   var arr = [];
   var firstTick = Math.ceil(bounds[0][i] / tickSpacing) * tickSpacing;
   var lastTick = Math.floor(bounds[1][i] / tickSpacing) * tickSpacing;

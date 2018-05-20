@@ -34,7 +34,7 @@ var mesh = createMesh(gl, conePlot)
 
 var select = createSelect(gl, [canvas.width, canvas.height])
 var tickSpacing = 1;
-var ticks = bounds[0].map((v,i) => {
+var ticks = bounds[0].map(function(v,i) {
   var arr = [];
   var firstTick = 0; //Math.ceil(bounds[0][i] / tickSpacing) * tickSpacing;
   var lastTick = 3; //Math.floor(bounds[1][i] / tickSpacing) * tickSpacing;
