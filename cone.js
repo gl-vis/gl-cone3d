@@ -155,6 +155,14 @@ module.exports = function(vectorfield, bounds) {
 		colormap: vectorfield.colormap
 	};
 
+	if (vectorfield.positions.length === 0) {
+		if (bounds) {
+			bounds[0] = [0,0,0];
+			bounds[1] = [0,0,0];
+		}
+		return geo;
+	}
+
 	// Compute bounding box for the dataset.
 	// Compute maximum velocity for the dataset to use for scaling the cones.
 	var maxNorm = 0;
