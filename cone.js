@@ -157,7 +157,7 @@ module.exports = function(vectorfield, bounds) {
 
 	// Compute bounding box for the dataset.
 	// Compute maximum velocity for the dataset to use for scaling the cones.
-	var maxLen = 0;
+	var maxNorm = 0;
 	var minX = 1/0, maxX = -1/0;
 	var minY = 1/0, maxY = -1/0;
 	var minZ = 1/0, maxZ = -1/0;
@@ -178,8 +178,8 @@ module.exports = function(vectorfield, bounds) {
 		} else {
 			u = vectors[i];
 		}
-		if (V.length(u) > maxLen) {
-			maxLen = V.length(u);
+		if (V.length(u) > maxNorm) {
+			maxNorm = V.length(u);
 		}
 		if (v2) {
 			var separation = V.distance(v1, v2);
@@ -196,17 +196,27 @@ module.exports = function(vectorfield, bounds) {
 		bounds[0] = minV;
 		bounds[1] = maxV;
 	}
-	var scaleV = V.subtract(vec3(), maxV, minV);
-	var imaxLen = 1 / maxLen;
+	if (maxNorm === 0) {
+		maxNorm = 1;
+	}
+	// Inverted max norm would map vector with norm maxNorm to 1 coord space units in length
+	var invertedMaxNorm = 1 / maxNorm;
 
-	geo.vectorScale = imaxLen * minSeparation;
+	if (!isFinite(minSeparation) || isNaN(minSeparation)) {
+		minSeparation = 1.0;
+	}
+
+	// Inverted max norm multiplied scaled by smallest found vector position distance:
+	// Maps a vector with norm maxNorm to minSeparation coord space units in length.
+	// In practice, scales maxNorm vectors so that they are just long enough to reach the adjacent vector position.
+	geo.vectorScale = invertedMaxNorm * minSeparation;
 
 	var nml = vec3(0,1,0);
 
 	var coneScale = vectorfield.coneSize || 0.5;
 
 	if (vectorfield.absoluteConeSize) {
-		coneScale = vectorfield.absoluteConeSize * imaxLen;
+		coneScale = vectorfield.absoluteConeSize * invertedMaxNorm;
 	}
 
 	geo.coneScale = coneScale;
@@ -216,7 +226,7 @@ module.exports = function(vectorfield, bounds) {
 		var p = positions[i];
 		var x = p[0], y = p[1], z = p[2];
 		var d = positionVectors[i];
-		var intensity = V.length(d) * imaxLen;
+		var intensity = V.length(d) * invertedMaxNorm;
 		for (var k = 0, l = 8; k < l; k++) {
 			geo.positions.push([x, y, z, j++]);
 			geo.positions.push([x, y, z, j++]);
