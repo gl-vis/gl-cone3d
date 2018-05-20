@@ -6,8 +6,9 @@ Visualization module for vector fields.
 
 ```javascript
 var createScene    = require('gl-plot3d')
-var createMesh     = require('gl-mesh3d')
 var createConePlot = require('gl-cone3d')
+var createMesh     = createConePlot.createConeMesh
+
 var wind           = require('dataset-wind')
 
 var scene = createScene()
