@@ -8,7 +8,7 @@ var getBounds    = require('bound-points')
 var mouseChange  = require('mouse-change')
 var createConePlot = require('../cone')
 var createMesh = createConePlot.createConeMesh;
-var data = require('./dataset-rossler');
+var data = require('./dataset-rossler.json');
 
 var bounds = []
 
