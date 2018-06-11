@@ -169,33 +169,39 @@ module.exports = function(vectorfield, bounds) {
 	var minX = 1/0, maxX = -1/0;
 	var minY = 1/0, maxY = -1/0;
 	var minZ = 1/0, maxZ = -1/0;
-	var v2 = null;
+	var p2 = null;
+	var u2 = null;
 	var positionVectors = [];
-	var minSeparation = 1/0;
+	var vectorScale = 1/0;
 	for (var i = 0; i < positions.length; i++) {
-		var v1 = positions[i];
-		minX = Math.min(v1[0], minX);
-		maxX = Math.max(v1[0], maxX);
-		minY = Math.min(v1[1], minY);
-		maxY = Math.max(v1[1], maxY);
-		minZ = Math.min(v1[2], minZ);
-		maxZ = Math.max(v1[2], maxZ);
+		var p = positions[i];
+		minX = Math.min(p[0], minX);
+		maxX = Math.max(p[0], maxX);
+		minY = Math.min(p[1], minY);
+		maxY = Math.max(p[1], maxY);
+		minZ = Math.min(p[2], minZ);
+		maxZ = Math.max(p[2], maxZ);
 		var u;
 		if (meshgrid) {
-			u = sampleMeshgrid(v1, vectors, meshgrid, true);
+			u = sampleMeshgrid(p, vectors, meshgrid, true);
 		} else {
 			u = vectors[i];
 		}
 		if (V.length(u) > maxNorm) {
 			maxNorm = V.length(u);
 		}
-		if (v2) {
-			var separation = V.distance(v1, v2);
-			if (separation < minSeparation) {
-				minSeparation = separation;
-			}
+		if (i) {
+			// Find vector scale [w/ units of time] using "successive" positions
+			// (not "adjacent" with would be O(n^2)),
+			//
+			// The vector scale corresponds to the minimum "time" to travel across two
+			// two adjacent positions at the average velocity of those two adjacent positions
+			vectorScale = Math.min(vectorScale,
+				2 * V.distance(p2, p) / (V.length(u2) + V.length(u))
+			);
 		}
-		v2 = v1;
+		p2 = p;
+		u2 = u;
 		positionVectors.push(u);
 	}
 	var minV = [minX, minY, minZ];
@@ -207,17 +213,14 @@ module.exports = function(vectorfield, bounds) {
 	if (maxNorm === 0) {
 		maxNorm = 1;
 	}
+
 	// Inverted max norm would map vector with norm maxNorm to 1 coord space units in length
 	var invertedMaxNorm = 1 / maxNorm;
 
-	if (!isFinite(minSeparation) || isNaN(minSeparation)) {
-		minSeparation = 1.0;
+	if (!isFinite(vectorScale) || isNaN(vectorScale)) {
+		vectorScale = 1.0;
 	}
-
-	// Inverted max norm multiplied scaled by smallest found vector position distance:
-	// Maps a vector with norm maxNorm to minSeparation coord space units in length.
-	// In practice, scales maxNorm vectors so that they are just long enough to reach the adjacent vector position.
-	geo.vectorScale = invertedMaxNorm * minSeparation;
+	geo.vectorScale = vectorScale;
 
 	var nml = vec3(0,1,0);
 
