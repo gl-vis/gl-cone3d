@@ -18,11 +18,16 @@ varying vec3 f_normal
 varying vec4 f_color;
 varying vec2 f_uv;
 
+bool outOfRange(float a, float b, float p) {
+  if (p > max(a, b)) return true;
+  if (p < min(a, b)) return true;
+  return false;
+}
+
 void main() {
-  //if(any(lessThan(f_data, clipBounds[0])) || 
-  //   any(greaterThan(f_data, clipBounds[1]))) {
-  //  discard;
-  //}
+  //if (outOfRange(clipBounds[0].x, clipBounds[1].x, f_data.x)) discard;
+  //if (outOfRange(clipBounds[0].y, clipBounds[1].y, f_data.y)) discard;
+  //if (outOfRange(clipBounds[0].z, clipBounds[1].z, f_data.z)) discard;
 
   vec3 N = normalize(f_normal);
   vec3 L = normalize(f_lightDirection);
