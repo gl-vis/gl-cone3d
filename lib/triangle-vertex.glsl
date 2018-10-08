@@ -30,7 +30,7 @@ void main() {
   // model & view changes.
   vec3 normal;
   vec3 XYZ = getConePosition(mat3(model) * ((vectorScale * coneScale) * vector), position.w, coneOffset, normal);
-  vec4 conePosition = model * vec4(position.xyz + XYZ, 1.0);
+  vec4 conePosition = model * vec4(position.xyz, 1.0) + vec4(XYZ, 0.0);
   normal = normalize(normal * inverse(mat3(model)));
 
   // vec4 m_position  = model * vec4(conePosition, 1.0);
