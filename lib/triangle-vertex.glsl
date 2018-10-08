@@ -20,7 +20,8 @@ uniform vec3 eyePosition
 varying vec3 f_normal
            , f_lightDirection
            , f_eyeDirection
-           , f_data;
+           , f_data
+           , f_position;
 varying vec4 f_color;
 varying vec2 f_uv;
 
@@ -28,7 +29,8 @@ void main() {
   // Scale the vector magnitude to stay constant with
   // model & view changes.
   vec3 normal;
-  vec4 conePosition = model * vec4(position.xyz, 1.0) + vec4(getConePosition(mat3(model) * ((vectorScale * coneScale) * vector), position.w, coneOffset, normal), 0.0);
+  vec3 XYZ = getConePosition(mat3(model) * ((vectorScale * coneScale) * vector), position.w, coneOffset, normal);
+  vec4 conePosition = model * vec4(position.xyz + XYZ, 1.0);
   normal = normalize(normal * inverse(mat3(model)));
 
   // vec4 m_position  = model * vec4(conePosition, 1.0);
@@ -37,6 +39,7 @@ void main() {
   f_color          = color; //vec4(position.w, color.r, 0, 0);
   f_normal         = normal;
   f_data           = conePosition.xyz;
+  f_position       = position.xyz;
   f_eyeDirection   = eyePosition   - conePosition.xyz;
   f_lightDirection = lightPosition - conePosition.xyz;
   f_uv             = uv;
