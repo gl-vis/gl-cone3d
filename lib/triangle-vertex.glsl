@@ -1,6 +1,5 @@
 precision mediump float;
 
-#pragma glslify: inverse = require(glsl-inverse)
 #pragma glslify: getConePosition = require(./cone-position.glsl)
 
 attribute vec3 vector;
@@ -13,7 +12,8 @@ uniform float coneOffset;
 
 uniform mat4 model
            , view
-           , projection;
+           , projection
+           , inverseModel;
 uniform vec3 eyePosition
            , lightPosition;
 
@@ -31,16 +31,20 @@ void main() {
   vec3 normal;
   vec3 XYZ = getConePosition(mat3(model) * ((vectorScale * coneScale) * vector), position.w, coneOffset, normal);
   vec4 conePosition = model * vec4(position.xyz, 1.0) + vec4(XYZ, 0.0);
-  normal = normalize(normal * inverse(mat3(model)));
+
+  //Lighting geometry parameters
+  vec4 cameraCoordinate = view * conePosition;
+  cameraCoordinate.xyz /= cameraCoordinate.w;
+  f_lightDirection = lightPosition - cameraCoordinate.xyz;
+  f_eyeDirection   = eyePosition - cameraCoordinate.xyz;
+  f_normal = normalize((vec4(normal,0) * inverseModel).xyz);
 
   // vec4 m_position  = model * vec4(conePosition, 1.0);
   vec4 t_position  = view * conePosition;
   gl_Position      = projection * t_position;
-  f_color          = color; //vec4(position.w, color.r, 0, 0);
-  f_normal         = normal;
+
+  f_color          = color;
   f_data           = conePosition.xyz;
   f_position       = position.xyz;
-  f_eyeDirection   = eyePosition   - conePosition.xyz;
-  f_lightDirection = lightPosition - conePosition.xyz;
   f_uv             = uv;
 }
