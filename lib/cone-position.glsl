@@ -35,17 +35,19 @@ vec3 getConePosition(vec3 d, float index, float coneOffset, out vec3 normal) {
 
   index = mod(index, segmentCount * 6.0);
 
-  float segment = floor(index/6.0);
+  float segment = floor(0.001 + index/6.0);
   float segmentIndex = index - (segment*6.0);
 
   normal = -normalize(d);
 
-  if (segmentIndex == 3.0) {
+  if (segmentIndex > 2.99 && segmentIndex < 3.01) {
     return mix(vec3(0.0), -d, coneOffset);
   }
 
-  // angle = 2pi * ((segment + ((segmentIndex == 1.0 || segmentIndex == 5.0) ? 1.0 : 0.0)) / segmentCount)
-  float nextAngle = float(segmentIndex == 1.0 || segmentIndex == 5.0);
+  float nextAngle = (
+    (segmentIndex > 0.99 &&  segmentIndex < 1.01) ||
+    (segmentIndex > 4.99 &&  segmentIndex < 5.01)
+  ) ? 1.0 : 0.0;
   float angle = 2.0 * 3.14159 * ((segment + nextAngle) / segmentCount);
 
   vec3 v1 = mix(d, vec3(0.0), coneOffset);
@@ -57,7 +59,7 @@ vec3 getConePosition(vec3 d, float index, float coneOffset, out vec3 normal) {
   vec3 x = u * cos(angle) * length(d)*0.25;
   vec3 y = v * sin(angle) * length(d)*0.25;
   vec3 v3 = v2 + x + y;
-  if (segmentIndex <= 2.0) {
+  if (segmentIndex < 3.0) {
     vec3 tx = u * sin(angle);
     vec3 ty = v * -cos(angle);
     vec3 tangent = tx + ty;
