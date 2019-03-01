@@ -37,7 +37,7 @@ void main() {
   cameraCoordinate.xyz /= cameraCoordinate.w;
   f_lightDirection = lightPosition - cameraCoordinate.xyz;
   f_eyeDirection   = eyePosition - cameraCoordinate.xyz;
-  f_normal = normalize((vec4(normal,0) * inverseModel).xyz);
+  f_normal = normalize((vec4(normal,0.0) * inverseModel).xyz);
 
   // vec4 m_position  = model * vec4(conePosition, 1.0);
   vec4 t_position  = view * conePosition;

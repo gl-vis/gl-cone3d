@@ -23,7 +23,7 @@ varying vec4 f_color;
 varying vec2 f_uv;
 
 void main() {
-  //if (outOfRange(clipBounds[0], clipBounds[1], f_position)) discard;
+  if (outOfRange(clipBounds[0], clipBounds[1], f_position)) discard;
   vec3 N = normalize(f_normal);
   vec3 L = normalize(f_lightDirection);
   vec3 V = normalize(f_eyeDirection);
