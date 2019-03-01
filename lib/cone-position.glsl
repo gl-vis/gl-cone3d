@@ -29,11 +29,13 @@ vec3 getOrthogonalVector(vec3 v) {
 // To go from segment to angle, 2*pi * (segment/segmentCount)
 // To go from index to segment index, index - (segment*6)
 //
-vec3 getConePosition(vec3 d, float index, float coneOffset, out vec3 normal) {
+vec3 getConePosition(vec3 d, float rawIndex, float coneOffset, out vec3 normal) {
 
   const float segmentCount = 8.0;
 
-  index = mod(index, segmentCount * 6.0);
+  float index = rawIndex - floor(rawIndex /
+    (segmentCount * 6.0)) *
+    (segmentCount * 6.0);
 
   float segment = floor(0.001 + index/6.0);
   float segmentIndex = index - (segment*6.0);
