@@ -7,7 +7,7 @@
     "example": "example"
   },
   "dependencies": {
-    "colormap": "^2.3.0",
+    "colormap": "^2.3.1",
     "gl-buffer": "^2.1.2",
     "gl-shader": "^4.2.1",
     "gl-texture2d": "^2.1.0",
@@ -22,15 +22,15 @@
     "typedarray-pool": "^1.1.0"
   },
   "devDependencies": {
-    "3d-view-controls": "^2.1.1",
+    "3d-view-controls": "^2.2.2",
     "bound-points": "^1.0.0",
     "canvas-fit": "^1.5.0",
     "chttps": "^1.0.6",
-    "gl-axes3d": "^1.4.2",
+    "gl-axes3d": "^1.5.2",
     "gl-mat4": "^1.2.0",
-    "gl-mesh3d": "^2.0.3",
-    "gl-select-static": "^2.0.3",
-    "gl-spikes3d": "^1.0.7"
+    "gl-mesh3d": "^2.1.1",
+    "gl-select-static": "^2.0.4",
+    "gl-spikes3d": "^1.0.9"
   },
   "scripts": {
     "postshrinkwrap": "chttps .",
