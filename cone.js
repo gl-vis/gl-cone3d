@@ -120,20 +120,6 @@ var sampleMeshgrid = function(point, array, meshgrid, clampOverflow) {
 	return result;
 };
 
-var getOrthogonalVector = function(dst, v) {
-	// Return up-vector for only-z vector.
-	if (v[0] === 0 && v[1] === 0) {
-		V.set(dst, 0, 1, 0);
-	} else {
-		// Return ax + by + cz = 0, a point that lies on the plane that has v as a normal and that isn't (0,0,0).
-		// From the above if-statement we have ||a|| > 0  U  ||b|| > 0.
-		// Assign z = 0, x = -b, y = a:
-		// a*-b + b*a + c*0 = -ba + ba + 0 = 0
-		V.set(dst, -v[1], v[0], 0);
-	}
-	return dst;
-};
-
 module.exports = function(vectorfield, bounds) {
 	var positions;
 	if (vectorfield.positions) {
