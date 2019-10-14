@@ -1,14 +1,6 @@
 "use strict";
 
-var V = require('gl-vec3');
-
-var vec3 = function(x, y, z) {
-	var v = V.create();
-	if (x !== undefined) {
-		V.set(v, x, y, z);
-	}
-	return v;
-}
+var vec3 = require('gl-vec3');
 
 module.exports = function(vectorfield, bounds) {
 	var positions = vectorfield.positions;
@@ -35,13 +27,13 @@ module.exports = function(vectorfield, bounds) {
 	// Compute bounding box for the dataset.
 	// Compute maximum velocity for the dataset to use for scaling the cones.
 	var maxNorm = 0;
-	var minX = 1/0, maxX = -1/0;
-	var minY = 1/0, maxY = -1/0;
-	var minZ = 1/0, maxZ = -1/0;
+	var minX = Infinity, maxX = -Infinity;
+	var minY = Infinity, maxY = -Infinity;
+	var minZ = Infinity, maxZ = -Infinity;
 	var p2 = null;
 	var u2 = null;
 	var positionVectors = [];
-	var vectorScale = 1/0;
+	var vectorScale = Infinity;
 	for (var i = 0; i < positions.length; i++) {
 		var p = positions[i];
 		minX = Math.min(p[0], minX);
@@ -52,8 +44,8 @@ module.exports = function(vectorfield, bounds) {
 		maxZ = Math.max(p[2], maxZ);
 		var u = vectors[i];
 
-		if (V.length(u) > maxNorm) {
-			maxNorm = V.length(u);
+		if (vec3.length(u) > maxNorm) {
+			maxNorm = vec3.length(u);
 		}
 		if (i) {
 			// Find vector scale [w/ units of time] using "successive" positions
@@ -62,7 +54,7 @@ module.exports = function(vectorfield, bounds) {
 			// The vector scale corresponds to the minimum "time" to travel across two
 			// two adjacent positions at the average velocity of those two adjacent positions
 			vectorScale = Math.min(vectorScale,
-				2 * V.distance(p2, p) / (V.length(u2) + V.length(u))
+				2 * vec3.distance(p2, p) / (vec3.length(u2) + vec3.length(u))
 			);
 		}
 		p2 = p;
@@ -82,12 +74,13 @@ module.exports = function(vectorfield, bounds) {
 	// Inverted max norm would map vector with norm maxNorm to 1 coord space units in length
 	var invertedMaxNorm = 1 / maxNorm;
 
-	if (!isFinite(vectorScale) || isNaN(vectorScale)) {
+	if (!isFinite(vectorScale)) {
 		vectorScale = 1.0;
 	}
 	geo.vectorScale = vectorScale;
 
-	var nml = vec3(0,1,0);
+	var nml = vec3.create();
+	vec3.set(nml, 0, 1, 0); // not clear why using this direction?!
 
 	var coneScale = vectorfield.coneSize || 0.5;
 
@@ -102,7 +95,7 @@ module.exports = function(vectorfield, bounds) {
 		var p = positions[i];
 		var x = p[0], y = p[1], z = p[2];
 		var d = positionVectors[i];
-		var intensity = V.length(d) * invertedMaxNorm;
+		var intensity = vec3.length(d) * invertedMaxNorm;
 		for (var k = 0, l = 8; k < l; k++) {
 			geo.positions.push([x, y, z, j++]);
 			geo.positions.push([x, y, z, j++]);
