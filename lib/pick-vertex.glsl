@@ -7,10 +7,7 @@ attribute vec4 position;
 attribute vec4 id;
 
 uniform mat4 model, view, projection;
-
-uniform float vectorScale;
-uniform float coneScale;
-uniform float coneOffset;
+uniform float vectorScale, coneScale, coneOffset;
 
 varying vec3 f_position;
 varying vec4 f_id;
