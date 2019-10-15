@@ -118,4 +118,11 @@ module.exports = function(vectorfield, bounds) {
 	return geo;
 };
 
-module.exports.createConeMesh = require('./lib/conemesh');
+var shaders = require('./lib/shaders');
+module.exports.createMesh = require('./lib/conemesh');
+module.exports.createConeMesh = function(gl, params) {
+	return module.exports.createMesh(gl, params, {
+		shaders: shaders,
+		traceType: 'cone'
+	});
+}
