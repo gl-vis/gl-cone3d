@@ -15,7 +15,7 @@ var IDENTITY = [
   0,0,1,0,
   0,0,0,1]
 
-function SimplicialMesh(gl
+function VectorMesh(gl
   , texture
   , triShader
   , pickShader
@@ -75,7 +75,7 @@ function SimplicialMesh(gl
   this._resolution  = [1,1]
 }
 
-var proto = SimplicialMesh.prototype
+var proto = VectorMesh.prototype
 
 proto.isOpaque = function() {
   return this.opacity >= 1
@@ -506,7 +506,7 @@ function createPickShader(gl, shaders) {
 }
 
 
-function createSimplicialMesh(gl, params, opts) {
+function createVectorMesh(gl, params, opts) {
   var shaders = opts.shaders
 
   if (arguments.length === 1) {
@@ -552,7 +552,7 @@ function createSimplicialMesh(gl, params, opts) {
     }
   ])
 
-  var mesh = new SimplicialMesh(gl
+  var mesh = new VectorMesh(gl
     , meshTexture
     , triShader
     , pickShader
@@ -570,4 +570,4 @@ function createSimplicialMesh(gl, params, opts) {
   return mesh
 }
 
-module.exports = createSimplicialMesh
+module.exports = createVectorMesh
