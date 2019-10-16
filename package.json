@@ -18,9 +18,7 @@
     "glsl-out-of-range": "^1.0.4",
     "glsl-specular-cook-torrance": "^2.0.1",
     "glslify": "^7.0.0",
-    "ndarray": "^1.0.18",
-    "simplicial-complex-contour": "^1.0.2",
-    "typedarray-pool": "^1.1.0"
+    "ndarray": "^1.0.18"
   },
   "devDependencies": {
     "3d-view-controls": "^2.2.2",
