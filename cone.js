@@ -9,7 +9,6 @@ module.exports = function(vectorfield, bounds) {
 		positions: [],
 		vertexIntensity: [],
 		vertexIntensityBounds: vectorfield.vertexIntensityBounds,
-		vertexNormals: [],
 		vectors: [],
 		cells: [],
 		coneOffset: vectorfield.coneOffset,
@@ -79,9 +78,6 @@ module.exports = function(vectorfield, bounds) {
 	}
 	geo.vectorScale = vectorScale;
 
-	var nml = vec3.create();
-	vec3.set(nml, 0, 1, 0); // not clear why using this direction?!
-
 	var coneScale = vectorfield.coneSize || 0.5;
 
 	if (vectorfield.absoluteConeSize) {
@@ -114,9 +110,6 @@ module.exports = function(vectorfield, bounds) {
 			geo.vertexIntensity.push(intensity, intensity, intensity);
 			geo.vertexIntensity.push(intensity, intensity, intensity);
 
-			geo.vertexNormals.push(nml, nml, nml);
-			geo.vertexNormals.push(nml, nml, nml);
-
 			var m = geo.positions.length;
 			geo.cells.push([m-6, m-5, m-4], [m-3, m-2, m-1]);
 		}
@@ -125,4 +118,11 @@ module.exports = function(vectorfield, bounds) {
 	return geo;
 };
 
-module.exports.createConeMesh = require('./lib/conemesh');
+var shaders = require('./lib/shaders');
+module.exports.createMesh = require('./lib/conemesh');
+module.exports.createConeMesh = function(gl, params) {
+	return module.exports.createMesh(gl, params, {
+		shaders: shaders,
+		traceType: 'cone'
+	});
+}

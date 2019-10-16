@@ -6,19 +6,10 @@ precision highp float;
 #pragma glslify: outOfRange = require(glsl-out-of-range)
 
 uniform vec3 clipBounds[2];
-uniform float roughness
-            , fresnel
-            , kambient
-            , kdiffuse
-            , kspecular
-            , opacity;
+uniform float roughness, fresnel, kambient, kdiffuse, kspecular, opacity;
 uniform sampler2D texture;
 
-varying vec3 f_normal
-           , f_lightDirection
-           , f_eyeDirection
-           , f_data
-           , f_position;
+varying vec3 f_normal, f_lightDirection, f_eyeDirection, f_data, f_position;
 varying vec4 f_color;
 varying vec2 f_uv;
 
