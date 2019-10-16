@@ -119,7 +119,7 @@ module.exports = function(vectorfield, bounds) {
 };
 
 var shaders = require('./lib/shaders');
-module.exports.createMesh = require('./lib/conemesh');
+module.exports.createMesh = require('./create_mesh');
 module.exports.createConeMesh = function(gl, params) {
 	return module.exports.createMesh(gl, params, {
 		shaders: shaders,
