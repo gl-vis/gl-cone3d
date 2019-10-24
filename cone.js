@@ -33,6 +33,7 @@ module.exports = function(vectorfield, bounds) {
 	var u2 = null;
 	var positionVectors = [];
 	var vectorScale = Infinity;
+	var skipIt = false;
 	for (var i = 0; i < positions.length; i++) {
 		var p = positions[i];
 		minX = Math.min(p[0], minX);
@@ -52,12 +53,19 @@ module.exports = function(vectorfield, bounds) {
 			//
 			// The vector scale corresponds to the minimum "time" to travel across two
 			// two adjacent positions at the average velocity of those two adjacent positions
-			vectorScale = Math.min(vectorScale,
-				2 * vec3.distance(p2, p) / (vec3.length(u2) + vec3.length(u))
-			);
+
+			var q = (2 * vec3.distance(p2, p) / (vec3.length(u2) + vec3.length(u)));
+			if(q) {
+				vectorScale = Math.min(vectorScale, q);
+				skipIt = false;
+			} else {
+				skipIt = true;
+			}
 		}
-		p2 = p;
-		u2 = u;
+		if(!skipIt) {
+			p2 = p;
+			u2 = u;
+		}
 		positionVectors.push(u);
 	}
 	var minV = [minX, minY, minZ];
