@@ -25,9 +25,9 @@
     "bound-points": "^1.0.0",
     "canvas-fit": "^1.5.0",
     "chttps": "^1.0.6",
-    "gl-axes3d": "^1.5.2",
-    "gl-select-static": "^2.0.4",
-    "gl-spikes3d": "^1.0.9"
+    "gl-axes3d": "^1.5.3",
+    "gl-select-static": "^2.0.6",
+    "gl-spikes3d": "^1.0.10"
   },
   "scripts": {
     "postshrinkwrap": "chttps .",
