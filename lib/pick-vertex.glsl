@@ -16,7 +16,7 @@ void main() {
   vec3 normal;
   vec3 XYZ = getConePosition(mat3(model) * ((vectorScale * coneScale) * vector.xyz), position.w, coneOffset, normal);
   vec4 conePosition = model * vec4(position.xyz, 1.0) + vec4(XYZ, 0.0);
-  gl_Position = projection * view * conePosition;
+  gl_Position = projection * (view * conePosition);
   f_id        = id;
   f_position  = position.xyz;
 }
